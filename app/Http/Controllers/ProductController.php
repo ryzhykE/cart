@@ -30,7 +30,7 @@ class ProductController extends Controller
 
     public function getCart() {
         if (!Session::has('cart')) {
-            return view('shop.shopping-cart',['products' => null]);
+            return view('shop.shopping-cart');
         }
         $oldCart = Session::get('cart');
         $cart = new Cart($oldCart);
