@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Cart;
 use App\Product;
+use App\Order;
+
 use Illuminate\Http\Request;
 use Session;
+use Auth;
 
 class ProductController extends Controller
 {
@@ -50,7 +53,7 @@ class ProductController extends Controller
         return view('shop.checkout', ['total' => $total]);
     }
     //переделать на отправку почты
-    public function postCheckout()
+    public function postCheckout(Request $request)
     {
         if (!Session::has('cart')) {
             return redirect()->route('product.shoppingCart');
@@ -59,8 +62,21 @@ class ProductController extends Controller
         $cart = new Cart($oldCart);
         //dd($cart);
         $total = $cart->totalPrice;
+        //скрипт отправки почты
+        try {
+            $order = new Order();
+            $order->cart = serialize($cart);
+            $order->address = $request->input('address');
+            $order->name = $request->input('name');
+
+            Auth::user()->orders()->save($order);
+
+        } catch(\Exception $e) {
+            return redirect()->route('checkout')->with('error', $e->getMessage());
+        }
         //удаление ключа из сессии
         Session::forget('cart');
-        return view('shop.checkout', ['total' => $total]);
+        //return view('shop.checkout', ['total' => $total]);
+        return redirect()->route('product.index')->with('success', 'Successfully purchased products!');
     }
 }
