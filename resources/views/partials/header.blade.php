@@ -18,6 +18,7 @@
                     <a href="{{ route('product.shoppingCart') }}">
                         <i class="fa fa-shopping-cart" aria-hidden="true"></i> Shopping Cart
                         <span class="badge">{{ Session::has('cart') ? Session::get('cart')->totalQty : '' }}</span>
+                        Total price <span class="badge"> {{ Session::has('cart') ? Session::get('cart')->totalPrice : '' }}</span>
                     </a>
                 </li>
                 <li class="dropdown">
