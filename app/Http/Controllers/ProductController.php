@@ -49,4 +49,18 @@ class ProductController extends Controller
         $total = $cart->totalPrice;
         return view('shop.checkout', ['total' => $total]);
     }
+    //переделать на отправку почты
+    public function postCheckout()
+    {
+        if (!Session::has('cart')) {
+            return redirect()->route('product.shoppingCart');
+        }
+        $oldCart = Session::get('cart');
+        $cart = new Cart($oldCart);
+        //dd($cart);
+        $total = $cart->totalPrice;
+        //удаление ключа из сессии
+        Session::forget('cart');
+        return view('shop.checkout', ['total' => $total]);
+    }
 }
